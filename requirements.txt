@@ -1,0 +1,7 @@
+pyaudio
+python-dotenv
+openai
+pyperclip
+keyboard
+global_hotkeys
+tk
