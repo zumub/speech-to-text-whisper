@@ -1,3 +1,8 @@
+# Copyright (C) 2023 Zumub S.A.
+# 
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import sys
 import tkinter as tk
 from tkinter import ttk
