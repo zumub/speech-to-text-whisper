@@ -22,6 +22,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 custom_prompt = os.getenv("CUSTOM_PROMPT")
 keyboard_binding = os.getenv("KEYBOARD_BINDING")
+keep_on_top = os.getenv("KEEP_ON_TOP", "false").lower() == "true"
 
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
@@ -55,12 +56,48 @@ def my_custom_export(input_file_path, output_file_path, format):
         logging.error(f"An error occurred: {str(e)}, Stdout: {stdout}, Stderr: {stderr}")        
 #logging.debug('This will get logged')
 
+MAX_RETRIES = 1  # Define a constant for maximum retries
+
+def contains_prompt(partial_prompt, transcript_text):
+    # Tokenize the prompt and the transcript
+    prompt_tokens = set(partial_prompt.lower().split())
+    transcript_tokens = set(transcript_text.lower().split())
+
+    # If the prompt has less than 8 words, simply return False, no need to retry
+    if len(prompt_tokens) < 8:
+        return False
+
+    # Calculate the number of prompt tokens present in the transcript
+    common_tokens = prompt_tokens.intersection(transcript_tokens)
+
+    # Calculate the percentage of prompt in the transcript
+    percentage = (len(common_tokens) / len(prompt_tokens)) * 100
+
+    return percentage >= 40
+
 def get_transcript(app):
     try:
         latest_file = 'output.mp3'
-        with open(latest_file, "rb") as audio_file:
-             response = openai.Audio.transcribe("whisper-1", audio_file, prompt=custom_prompt)
-        transcript_text = response['text']
+        retries = 0
+
+        while retries < MAX_RETRIES:
+            with open(latest_file, "rb") as audio_file:
+                response = openai.Audio.transcribe("whisper-1", audio_file, prompt=custom_prompt)
+            transcript_text = response['text']
+
+            if contains_prompt(custom_prompt, transcript_text):
+                # Handle the erroneous situation.
+                logging.error(f"Detected partial prompt in transcript. Retry {retries + 1} of {MAX_RETRIES}.")
+                retries += 1
+                continue
+            else:
+                # If transcript is successful, break the loop
+                break
+        else:
+            # This block will execute if the loop completes without breaking (all retries exhausted)
+            logging.error(f"Failed to get a valid transcript after {MAX_RETRIES} attempts.")
+            return
+
         print(custom_prompt)
         print(transcript_text)
         pyperclip.copy(transcript_text)
@@ -81,8 +118,9 @@ class AudioRecorder:
 
         self.transcript_label = ttk.Label(self.root, text="", wraplength=350)
         self.transcript_label.grid(row=1, column=0, padx=10, pady=10)
-
-        self.root.wm_attributes("-topmost", 1)
+        if keep_on_top:
+            self.root.wm_attributes("-topmost", 1)
+            self.root.bind('<Unmap>', self.prevent_minimize)		
         
         self.color_indicator = tk.Canvas(self.root, width=10, height=10, bg='green')
         self.color_indicator.grid(row=0, column=1)
@@ -92,6 +130,9 @@ class AudioRecorder:
         ]
         register_hotkeys(bindings)
         threading.Thread(target=start_checking_hotkeys).start() 
+		
+    def prevent_minimize(self, event=None):
+        self.root.after(10, self.root.deiconify)		
 
     def toggle_record(self):
         if self.is_recording:
