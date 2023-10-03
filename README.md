@@ -101,7 +101,7 @@ git clone https://github.com/zumub/speech-to-text-whisper
 
 ### Step 2: Install Python:
 - To install manually: 
-  - Go to the [Python Downloads](https://www.python.org/downloads/) page and download the installer for the latest Python version.
+  - Go to the [Python Downloads](https://www.python.org/downloads/macos/) page and download the installer for the latest Python version.
   - Run the installer and follow the prompts to install Python.  
 - To install with terminal: 
   - Install **Homebrew** (Package Manager)
