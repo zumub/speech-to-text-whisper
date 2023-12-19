@@ -1,7 +1,7 @@
-pyaudio
-python-dotenv
-openai
-pyperclip
-keyboard
-global_hotkeys
-tk
+pyaudio==0.2.13
+python-dotenv==1.0.0
+openai==0.28.1
+pyperclip==1.8.2
+pynput==1.7.6
+tk==0.1.0
+pyautogui==0.9.54
