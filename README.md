@@ -89,6 +89,10 @@ git clone https://github.com/zumub/speech-to-text-whisper
   OPENAI_API_KEY="YOUR_OPENAI_API_HERE"
   CUSTOM_PROMPT=""
   KEYBOARD_BINDING="control+\\"
+  KEEP_ON_TOP=true
+  RESEND_BUTTON=true
+  AUTO_DETECT_LANGUAGE=false
+  LANGUAGES='en,fr,pt'
   ```
 
   
@@ -136,12 +140,30 @@ git clone https://github.com/zumub/speech-to-text-whisper
 	 ```
 	> [!NOTE] 
 	> - For more information or troubleshooting during installation, you can visit the [Homebrew](https://brew.sh/) and [FFmpeg](https://ffmpeg.org/) official documentation.
-### Step 4: Install project dependencies
+### Step 4: Install PortAudio:
+- To download PortAudio manually: [PortAudio downloads](https://files.portaudio.com/download.html)
+- To install with terminal: 
+  - Install **Homebrew** (Package Manager)
+    ```bash
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    ```
+  - Install **PortAudio**
+	  ```bash
+	 brew install portaudio
+	 ```
+  - Confirm the installation and check the PortAudio version:
+	  ```bash
+	 brew info portaudio
+	 ```
+	> [!NOTE] 
+	> - For more information or troubleshooting during installation, you can visit the [Homebrew](https://brew.sh/) and [PortAudio](https://www.portaudio.com/) official documentation.
+
+### Step 5: Install project dependencies
 - Open terminal in project directory and run the following command:
   ```bash
   pip3 install -r requirements.txt
   ```
-### Step 5: Create an executeable file
+### Step 6: Create an executeable file
 > [!IMPORTANT] 
 > PyInstaller is required to create an executeable file. .
 - Open terminal and run the following command:
@@ -169,6 +191,10 @@ git clone https://github.com/zumub/speech-to-text-whisper
   OPENAI_API_KEY="YOUR_OPENAI_API_HERE"
   CUSTOM_PROMPT=""
   KEYBOARD_BINDING="control+\\"
+  KEEP_ON_TOP=true
+  RESEND_BUTTON=true
+  AUTO_DETECT_LANGUAGE=false
+  LANGUAGES='en,fr,pt'
   ```
 
 ## Usage
@@ -176,6 +202,7 @@ git clone https://github.com/zumub/speech-to-text-whisper
 - Activate the application using the configured hotkey to start transcribing.
 - Speak clearly and once done, use the hotkey again to stop the transcription.
 - Review the Transcription: The transcribed text will be automatically inserted at the cursor position.
+- To translate into specific language, use AUTO_DETECT_LANGUAGE=false and set 'LANGUAGES' in .env
 
 # Support Zumub
 
