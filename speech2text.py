@@ -140,19 +140,15 @@ def get_transcript(app):
         app.color_indicator.config(bg='green')
 
 def paste_text():
+    keyboard = Controller()
     if platform.system() == "Windows":
-        with Controller() as keyboard:
-            keyboard.press(Key.ctrl)
+        with keyboard.pressed(Key.ctrl):
             keyboard.press('v')
             keyboard.release('v')
-            keyboard.release(Key.ctrl)
     else:
-        with Listener(on_press=None, on_release=None) as listener:
-            with Controller() as keyboard:
-                keyboard.press(Key.cmd)
-                keyboard.press('v')
-                keyboard.release('v')
-                keyboard.release(Key.cmd)
+        with keyboard.pressed(Key.cmd):
+            keyboard.press('v')
+            keyboard.release('v')
 
 class AudioRecorder:
     def __init__(self, root):
